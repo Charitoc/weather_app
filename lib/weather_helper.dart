@@ -13,8 +13,8 @@ import 'utils/Secrets.dart';
 //const API_KEY = 'bf44fb7452f5021bcf6d6b2d3f59700c';
 
 class WeatherHelper extends ChangeNotifier {
-  static var lat;
-  static var lon;
+  num lat;
+  num lon;
   var responseObject;
   var responseObject2;
 
@@ -23,7 +23,7 @@ class WeatherHelper extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<CurrentByLatLng> getWeather(double latitude, double longitude) async {
+  Future<CurrentByLatLng> getWeather(num latitude, num longitude) async {
     final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=${Secrets.API_KEY}');
     final response = await http.get(url);
@@ -55,7 +55,7 @@ class WeatherHelper extends ChangeNotifier {
     return responseObject;
   }
 
-  Future<HourlyByLatLng> getHourlyWeather(double lat, double lon) async {
+  Future<HourlyByLatLng> getHourlyWeather(num lat, num lon) async {
     final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&cnt=3&units=metric&appid=${Secrets.API_KEY}');
     final response = await http.get(url);
@@ -63,16 +63,16 @@ class WeatherHelper extends ChangeNotifier {
     // final hourlyList = json.decode(response.body)['hourly'];
     // List<DayCard> finList = [];
     // for (var i = 0; i < 47; i++) {
-    //   //print(hourlyList[i]['dt']);
+    //   //prnum(hourlyList[i]['dt']);
     //   // finList[i] = hourlyList[i][0];
-    //   // print(finList[0]);
+    //   // prnum(finList[0]);
     //   var date = DateTime.fromMillisecondsSinceEpoch(hourlyList[i]['dt'] * 1000)
     //       .toString()
     //       .substring(11, 16);
     //   var temp = hourlyList[i]['temp'].round();
     //   final newDay = DayCard(date, temp);
     //   finList.add(newDay);
-    // print(date);
+    // prnum(date);
     // print(temp);
     // dailyInfo[i] = temp;
     // print(finList[i].hour);

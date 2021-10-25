@@ -19,6 +19,8 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   var location;
+  num lat;
+  num lon;
   var weather;
   var time;
   Future<List<DayCard>> dayCards;
@@ -27,10 +29,13 @@ class _DetailScreenState extends State<DetailScreen> {
   HourlyByLatLng response2;
   Future myFuture;
   Future dayresponse;
+  Future myFuture2;
+  Future<HourlyByLatLng> _myFuture;
 
   @override
   void initState() {
     super.initState();
+
     //isLoading = true;
     // location = Provider.of<LocationHelper>(context).location;
     // weather = Provider.of<WeatherHelper>(context).weather;
@@ -64,6 +69,26 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
+    // Future fun() async {
+    //   final aFuture = await Future.wait([
+    //     Provider.of<LocationHelper>(context, listen: false)
+    //         .getplace()
+    //         .then((value) {
+    //       location = value[0];
+    //       lat = value[1];
+    //       lon = value[2];
+    //     }).then((value) {
+    //       //     .then((value) {
+    //       //   print("NEXT VALUE ${value.toJson()}");
+    //       //   response = value;
+    //       // }),
+
+    //       return 1;
+    //     }),
+    //   ]);
+    // }
+
+    //fun().then((value) => null);
 
     //final resp = Provider.of<WeatherHelper>(context).hello;
 
@@ -83,37 +108,48 @@ class _DetailScreenState extends State<DetailScreen> {
           //     });
           //   }),
           // ]),
-          future: Future.wait([
-            Provider.of<LocationHelper>(context, listen: false)
-                .getplace()
-                .then((value) => location = value),
-            Provider.of<WeatherHelper>(context, listen: false)
-                .getWeather(40, 20)
-                .then((value) => response = value),
-            Provider.of<WeatherHelper>(context, listen: false)
-                .getHourlyWeather(40, 20)
-                .then((value) => response2 = value)
-          ]),
+          future: Provider.of<LocationHelper>(context)
+              .getplace()
+              .then((value) async {
+            location = value[0];
+            lat = value[1];
+            lon = value[2];
+            await Future.wait([
+              myFuture = Provider.of<WeatherHelper>(context, listen: false)
+                  .getWeather(lat, lon)
+                  .then((value) => response = value),
+              myFuture2 = Provider.of<WeatherHelper>(context, listen: false)
+                  .getHourlyWeather(lat, lon)
+                  .then((value) => response2 = value)
+            ]);
+          }),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.error != null) {
               print(snapshot.error);
               return Text(
-                'An error occured',
+                snapshot.error.toString(),
                 style: TextStyle(color: Colors.white),
               );
-            } else if (snapshot.data == null) {
-              return CircularProgressIndicator();
             } else {
+              //print("${response.toJson()}");
+              print("DONE");
               return Container(
-                  decoration: response.weather[0].icon.toString().contains('d')
-                      ? BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/day.jpg"),
-                            fit: BoxFit.fill,
-                          ),
-                        )
+                  decoration: (response?.weather?.length ?? 0) > 0
+                      ? response.weather[0].icon.toString().contains('d')
+                          ? BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/day.jpg"),
+                                fit: BoxFit.fill,
+                              ),
+                            )
+                          : BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/night.jpg"),
+                                fit: BoxFit.fill,
+                              ),
+                            )
                       : BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage("assets/images/night.jpg"),

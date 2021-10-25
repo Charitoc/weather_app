@@ -21,10 +21,10 @@ class HourlyByLatLng {
     this.daily,
   });
 
-  var lat;
-  var lon;
+  num lat;
+  num lon;
   String timezone;
-  int timezoneOffset;
+  num timezoneOffset;
   Current current;
   List<Minutely> minutely;
   List<Current> hourly;
@@ -90,22 +90,22 @@ class Current {
     this.rain,
   });
 
-  int dt;
-  int sunrise;
-  int sunset;
-  double temp;
-  double feelsLike;
-  int pressure;
-  int humidity;
-  double dewPoint;
-  double uvi;
-  int clouds;
-  int visibility;
-  double windSpeed;
-  int windDeg;
-  double windGust;
+  num dt;
+  num sunrise;
+  num sunset;
+  num temp;
+  num feelsLike;
+  num pressure;
+  num humidity;
+  num dewPoint;
+  num uvi;
+  num clouds;
+  num visibility;
+  num windSpeed;
+  num windDeg;
+  num windGust;
   List<Weather> weather;
-  double pop;
+  num pop;
   Rain rain;
 
   factory Current.fromJson(Map<String, dynamic> json) => Current(
@@ -163,7 +163,7 @@ class Rain {
     this.the1H,
   });
 
-  double the1H;
+  num the1H;
 
   factory Rain.fromJson(Map<String, dynamic> json) => Rain(
         the1H: json["1h"] == null ? null : json["1h"].toDouble(),
@@ -182,7 +182,7 @@ class Weather {
     this.icon,
   });
 
-  int id;
+  num id;
   String main;
   String description;
   String icon;
@@ -225,25 +225,25 @@ class Daily {
     this.uvi,
   });
 
-  int dt;
-  int sunrise;
-  int sunset;
-  int moonrise;
-  int moonset;
-  double moonPhase;
+  num dt;
+  num sunrise;
+  num sunset;
+  num moonrise;
+  num moonset;
+  num moonPhase;
   Temp temp;
   FeelsLike feelsLike;
-  int pressure;
-  int humidity;
-  double dewPoint;
-  double windSpeed;
-  int windDeg;
-  double windGust;
+  num pressure;
+  num humidity;
+  num dewPoint;
+  num windSpeed;
+  num windDeg;
+  num windGust;
   List<Weather> weather;
-  int clouds;
-  double pop;
-  double rain;
-  double uvi;
+  num clouds;
+  num pop;
+  num rain;
+  num uvi;
 
   factory Daily.fromJson(Map<String, dynamic> json) => Daily(
         dt: json["dt"] == null ? null : json["dt"],
@@ -309,10 +309,10 @@ class FeelsLike {
     this.morn,
   });
 
-  double day;
-  double night;
-  double eve;
-  double morn;
+  num day;
+  num night;
+  num eve;
+  num morn;
 
   factory FeelsLike.fromJson(Map<String, dynamic> json) => FeelsLike(
         day: json["day"] == null ? null : json["day"].toDouble(),
@@ -339,12 +339,12 @@ class Temp {
     this.morn,
   });
 
-  double day;
-  double min;
-  double max;
-  double night;
-  double eve;
-  double morn;
+  num day;
+  num min;
+  num max;
+  num night;
+  num eve;
+  num morn;
 
   factory Temp.fromJson(Map<String, dynamic> json) => Temp(
         day: json["day"] == null ? null : json["day"].toDouble(),
@@ -371,8 +371,8 @@ class Minutely {
     this.precipitation,
   });
 
-  int dt;
-  int precipitation;
+  num dt;
+  num precipitation;
 
   factory Minutely.fromJson(Map<String, dynamic> json) => Minutely(
         dt: json["dt"] == null ? null : json["dt"],
