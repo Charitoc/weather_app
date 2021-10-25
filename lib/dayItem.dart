@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import 'package:weather_app/icons.dart';
 import 'package:weather_app/models/HourlyByLatLng.dart';
 import 'package:weather_app/weather_helper.dart';
 import 'package:weather_icons/weather_icons.dart';
@@ -8,13 +10,17 @@ class DayItem extends StatelessWidget {
   DayItem({@required this.response, @required this.i});
   final HourlyByLatLng response;
   int i;
+
   @override
   Widget build(BuildContext context) {
     // var date = DateTime.fromMillisecondsSinceEpoch(hourlyList[i]['dt'] * 1000)
     //       .toString()
     //       .substring(11, 16);
+
+    final iconReceived = response.hourly[i].weather[0].icon;
+    final icon = IconConverter(iconName: iconReceived).switchIcon();
     return Container(
-      height: 100,
+      height: 120,
       width: 100,
       // decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
       child: Card(
@@ -34,8 +40,11 @@ class DayItem extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).accentColor),
                 textAlign: TextAlign.center,
               ),
+              icon,
               // Image.network(
-              //     'http://openweathermap.org/img/w/10d.png'), //response.hourly[i].weather[0].icon),
+              //   'https://openweathermap.org/img/w/$icon.png',
+              //   fit: BoxFit.fill,
+              // ), //response.hourly[i].weather[0].icon),
               Text(
                 '${response.hourly[i].temp.round().toString()}°',
                 style: TextStyle(color: Theme.of(context).accentColor),

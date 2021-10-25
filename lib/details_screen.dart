@@ -92,117 +92,119 @@ class _DetailScreenState extends State<DetailScreen> {
 
     //final resp = Provider.of<WeatherHelper>(context).hello;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: FutureBuilder(
-          // future: Future.wait([
-          //   Provider.of<LocationHelper>(context, listen: false)
-          //       .getplace()
-          //       .then((val) {
-          //     location = val;
-          //     Provider.of<WeatherHelper>(context, listen: false)
-          //         .getWeather(40.0, 20.0)
-          //         .then((value) {
-          //       response = value;
-          //       print(response.main.humidity);
-          //     });
-          //   }),
-          // ]),
-          future: Provider.of<LocationHelper>(context)
-              .getplace()
-              .then((value) async {
-            location = value[0];
-            lat = value[1];
-            lon = value[2];
-            await Future.wait([
-              myFuture = Provider.of<WeatherHelper>(context, listen: false)
-                  .getWeather(lat, lon)
-                  .then((value) => response = value),
-              myFuture2 = Provider.of<WeatherHelper>(context, listen: false)
-                  .getHourlyWeather(lat, lon)
-                  .then((value) => response2 = value)
-            ]);
-          }),
-          builder: (ctx, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.error != null) {
-              print(snapshot.error);
-              return Text(
-                snapshot.error.toString(),
-                style: TextStyle(color: Colors.white),
-              );
-            } else {
-              //print("${response.toJson()}");
-              print("DONE");
-              return Container(
-                  decoration: (response?.weather?.length ?? 0) > 0
-                      ? response.weather[0].icon.toString().contains('d')
-                          ? BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/images/day.jpg"),
-                                fit: BoxFit.fill,
-                              ),
-                            )
-                          : BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/images/night.jpg"),
-                                fit: BoxFit.fill,
-                              ),
-                            )
-                      : BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/images/night.jpg"),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          location ?? "",
-                          style: TextStyle(
-                              fontSize: 30,
-                              color: Theme.of(context).accentColor),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              ('${response.main.temp.round()}°'),
-                              style: TextStyle(
-                                  fontSize: deviceWidth / 3,
-                                  color: Theme.of(context).accentColor),
-                            ),
-                            BoxedIcon(
-                              WeatherIcons.day_sunny,
-                              size: deviceWidth / 4,
-                              color: Theme.of(context).accentColor,
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        response2 != null
-                            ? NextDaysScroll(
-                                response: response2,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: FutureBuilder(
+            // future: Future.wait([
+            //   Provider.of<LocationHelper>(context, listen: false)
+            //       .getplace()
+            //       .then((val) {
+            //     location = val;
+            //     Provider.of<WeatherHelper>(context, listen: false)
+            //         .getWeather(40.0, 20.0)
+            //         .then((value) {
+            //       response = value;
+            //       print(response.main.humidity);
+            //     });
+            //   }),
+            // ]),
+            future: Provider.of<LocationHelper>(context)
+                .getplace()
+                .then((value) async {
+              location = value[0];
+              lat = value[1];
+              lon = value[2];
+              await Future.wait([
+                myFuture = Provider.of<WeatherHelper>(context, listen: false)
+                    .getWeather(lat, lon)
+                    .then((value) => response = value),
+                myFuture2 = Provider.of<WeatherHelper>(context, listen: false)
+                    .getHourlyWeather(lat, lon)
+                    .then((value) => response2 = value)
+              ]);
+            }),
+            builder: (ctx, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.error != null) {
+                print(snapshot.error);
+                return Text(
+                  snapshot.error.toString(),
+                  style: TextStyle(color: Colors.white),
+                );
+              } else {
+                //print("${response.toJson()}");
+                // print("DONE");
+                return Container(
+                    decoration: (response?.weather?.length ?? 0) > 0
+                        ? response.weather[0].icon.toString().contains('d')
+                            ? BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/day.jpg"),
+                                  fit: BoxFit.fill,
+                                ),
                               )
-                            : CircularProgressIndicator(),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        BottomCard(
-                            windSpeed: response.wind.speed,
-                            humidity: response.main.humidity,
-                            feelsLike: response.main.feelsLike),
-                      ],
-                    ),
-                  ));
-            }
-          }),
+                            : BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/night.jpg"),
+                                  fit: BoxFit.fill,
+                                ),
+                              )
+                        : BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/night.jpg"),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            location ?? "",
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Theme.of(context).accentColor),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                ('${response.main.temp.round()}°'),
+                                style: TextStyle(
+                                    fontSize: deviceWidth / 3,
+                                    color: Theme.of(context).accentColor),
+                              ),
+                              // BoxedIcon(
+                              //   WeatherIcons.day_sunny,
+                              //   size: deviceWidth / 4,
+                              //   color: Theme.of(context).accentColor,
+                              // )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 140,
+                          ),
+                          response2 != null
+                              ? NextDaysScroll(
+                                  response: response2,
+                                )
+                              : CircularProgressIndicator(),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          BottomCard(
+                              windSpeed: response.wind.speed,
+                              humidity: response.main.humidity,
+                              feelsLike: response.main.feelsLike),
+                        ],
+                      ),
+                    ));
+              }
+            }),
+      ),
     );
   }
 }
@@ -217,10 +219,10 @@ class NextDaysScroll extends StatelessWidget {
     // final wer = Provider.of<WeatherHelper>(context);
     // var response = wer.hello;
     return Container(
-      height: 100,
+      height: 120,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 9,
+        itemCount: 24,
         itemBuilder: (ctx, i) {
           return DayItem(response: response, i: i);
           // return Container(
@@ -263,53 +265,65 @@ class BottomCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Flexible(
-              flex: 1,
+            Center(
+              // flex: 1,
               child: Container(
+                alignment: Alignment.center,
                 height: 80,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text('Wind',
-                        style: TextStyle(color: Theme.of(context).accentColor)),
+                    BoxedIcon(
+                      WeatherIcons.windy,
+                      color: Theme.of(context).accentColor,
+                      size: 26,
+                    ),
                     Text('$windSpeed Km/h',
                         style: TextStyle(color: Theme.of(context).accentColor)),
-                    Text('')
                   ],
                 ),
               ),
             ),
-            Flexible(
-              flex: 1,
+            Center(
+              // flex: 1,
               child: Container(
+                alignment: Alignment.center,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text('Humidity',
-                        style: TextStyle(color: Theme.of(context).accentColor)),
+                    BoxedIcon(
+                      WeatherIcons.humidity,
+                      color: Theme.of(context).accentColor,
+                      // size: 26,
+                    ),
                     Text('$humidity %',
                         style: TextStyle(color: Theme.of(context).accentColor)),
-                    Text('')
                   ],
                 ),
                 height: 80,
               ),
             ),
-            Flexible(
-              flex: 1,
+            Center(
+              // flex: 1,
               child: Container(
+                alignment: Alignment.center,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text(
                       'Feels Like',
                       style: TextStyle(color: Theme.of(context).accentColor),
                     ),
+                    SizedBox(
+                      height: 18,
+                    ),
                     Text(
-                      '$feelsLike Km',
+                      '$feelsLike°',
                       style: TextStyle(color: Theme.of(context).accentColor),
                     ),
-                    Text('')
                   ],
                 ),
                 height: 80,
