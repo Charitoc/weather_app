@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/retry.dart';
+import 'package:weather_app/location_helper.dart';
 import 'package:weather_app/models/CurrentByLatLng.dart';
 import 'package:weather_app/models/HourlyByLatLng.dart';
 
@@ -11,16 +12,22 @@ import 'utils/Secrets.dart';
 
 //const API_KEY = 'bf44fb7452f5021bcf6d6b2d3f59700c';
 
-class WeatherHelper {
+class WeatherHelper extends ChangeNotifier {
   static var lat;
   static var lon;
+  var responseObject;
   var responseObject2;
-  static Future<CurrentByLatLng> getWeather(
-      double latitude, double longitude) async {
+
+  WeatherHelper() {
+    getWeather(40, 20);
+    notifyListeners();
+  }
+
+  Future<CurrentByLatLng> getWeather(double latitude, double longitude) async {
     final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=${Secrets.API_KEY}');
     final response = await http.get(url);
-    final responseObject = currentByLatLngFromJson(response.body);
+    responseObject = currentByLatLngFromJson(response.body);
     //print("${responseObject.main.humidity}");
     // final body = json.decode(response.body)['main']['temp'].round();
     // final humidity = json.decode(response.body)['main']['humidity'].toString();
@@ -44,15 +51,15 @@ class WeatherHelper {
     return responseObject;
   }
 
-  // CurrentByLatLng get{
+  CurrentByLatLng get weather {
+    return responseObject;
+  }
 
-  // }
-
-  static Future<HourlyByLatLng> getHourlyWeather(double lat, double lon) async {
+  Future<HourlyByLatLng> getHourlyWeather(double lat, double lon) async {
     final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&cnt=3&units=metric&appid=${Secrets.API_KEY}');
     final response = await http.get(url);
-    final responseObject2 = hourlyByLatLngFromJson(response.body);
+    responseObject2 = hourlyByLatLngFromJson(response.body);
     // final hourlyList = json.decode(response.body)['hourly'];
     // List<DayCard> finList = [];
     // for (var i = 0; i < 47; i++) {
@@ -78,7 +85,7 @@ class WeatherHelper {
     return responseObject2;
   }
 
-  HourlyByLatLng get hello {
+  HourlyByLatLng get hourlyWeather {
     return responseObject2;
   }
 }

@@ -14,12 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<WeatherHelper>(
+        ChangeNotifierProvider<WeatherHelper>(
           create: (ctx) => WeatherHelper(),
         ),
-        Provider<LocationHelper>(
+        ChangeNotifierProvider<LocationHelper>(
           create: (ctx) => LocationHelper(),
-        )
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

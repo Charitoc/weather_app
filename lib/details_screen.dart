@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/Day.dart';
 import 'package:weather_app/dayItem.dart';
@@ -17,6 +19,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   var location;
+  var weather;
   var time;
   Future<List<DayCard>> dayCards;
   List<DayCard> listofDayCards;
@@ -29,14 +32,16 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     super.initState();
     //isLoading = true;
-    LocationHelper.getplace().then((value) {
-      setState(() {
-        this.location = value;
-      });
-    }).then((_) {
-      //List hourList = List<Object>.from(element);
-      //Future<List> hourList =
-    });
+    // location = Provider.of<LocationHelper>(context).location;
+    // weather = Provider.of<WeatherHelper>(context).weather;
+    // LocationHelper.getplace().then((value) {
+    //   setState(() {
+    //     this.location = value;
+    //   });
+    // }).then((_) {
+    //   //List hourList = List<Object>.from(element);
+    //   //Future<List> hourList =
+    // });
     // .then((_) {
     //   WeatherHelper.getHourlyWeather(
     //           LocationHelper.latitude, LocationHelper.latitude)
@@ -59,26 +64,47 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
-    final myFuture = WeatherHelper.getWeather(
-            LocationHelper.latitude, LocationHelper.longitude)
-        .then((value) {
-      response = value;
-    }).then((_) {
-      dayresponse = WeatherHelper.getHourlyWeather(
-              LocationHelper.latitude, LocationHelper.longitude)
-          .then((value) {
-        response2 = value;
-      });
-    });
 
-    final resp = Provider.of<WeatherHelper>(context).hello;
+    //final resp = Provider.of<WeatherHelper>(context).hello;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: FutureBuilder(
-          future: dayresponse,
+          // future: Future.wait([
+          //   Provider.of<LocationHelper>(context, listen: false)
+          //       .getplace()
+          //       .then((val) {
+          //     location = val;
+          //     Provider.of<WeatherHelper>(context, listen: false)
+          //         .getWeather(40.0, 20.0)
+          //         .then((value) {
+          //       response = value;
+          //       print(response.main.humidity);
+          //     });
+          //   }),
+          // ]),
+          future: Future.wait([
+            Provider.of<LocationHelper>(context, listen: false)
+                .getplace()
+                .then((value) => location = value),
+            Provider.of<WeatherHelper>(context, listen: false)
+                .getWeather(40, 20)
+                .then((value) => response = value),
+            Provider.of<WeatherHelper>(context, listen: false)
+                .getHourlyWeather(40, 20)
+                .then((value) => response2 = value)
+          ]),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return Center(child: CircularProgressIndicator());
+            } else if (snapshot.error != null) {
+              print(snapshot.error);
+              return Text(
+                'An error occured',
+                style: TextStyle(color: Colors.white),
+              );
+            } else if (snapshot.data == null) {
+              return CircularProgressIndicator();
             } else {
               return Container(
                   decoration: response.weather[0].icon.toString().contains('d')

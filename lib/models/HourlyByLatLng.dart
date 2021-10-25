@@ -21,8 +21,8 @@ class HourlyByLatLng {
     this.daily,
   });
 
-  double lat;
-  double lon;
+  var lat;
+  var lon;
   String timezone;
   int timezoneOffset;
   Current current;

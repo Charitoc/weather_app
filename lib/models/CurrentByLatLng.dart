@@ -98,8 +98,8 @@ class Coord {
     this.lat,
   });
 
-  double lon;
-  double lat;
+  var lon;
+  var lat;
 
   factory Coord.fromJson(Map<String, dynamic> json) => Coord(
         lon: json["lon"] == null ? null : json["lon"],
