@@ -9,16 +9,11 @@ class DayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var date = DateTime.fromMillisecondsSinceEpoch(hourlyList[i]['dt'] * 1000)
-    //       .toString()
-    //       .substring(11, 16);
-
     final iconReceived = response.hourly[i].weather[0].icon;
     final icon = IconConverter(iconName: iconReceived).switchIcon();
     return Container(
       height: 120,
       width: 100,
-      // decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 0,
@@ -37,10 +32,6 @@ class DayItem extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               icon,
-              // Image.network(
-              //   'https://openweathermap.org/img/w/$icon.png',
-              //   fit: BoxFit.fill,
-              // ), //response.hourly[i].weather[0].icon),
               Text(
                 '${response.hourly[i].temp.round().toString()}°',
                 style: TextStyle(color: Theme.of(context).accentColor),
