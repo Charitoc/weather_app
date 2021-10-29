@@ -7,8 +7,6 @@ import 'package:weather_app/weather_helper.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'location_helper.dart';
 
-const OPENWEATHER_API_KEY = 'bf44fb7452f5021bcf6d6b2d3f59700c';
-
 class DetailScreen extends StatefulWidget {
   @override
   _DetailScreenState createState() => _DetailScreenState();

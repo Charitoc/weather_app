@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
-
-const GOOGLE_API_KEY = 'AIzaSyAQmqyQ48oguhkEfvkh_lVVVVdUKRW4e6Y';
+import 'utils/Secrets.dart';
 
 class LocationHelper with ChangeNotifier {
   num latitude;
@@ -56,7 +55,7 @@ class LocationHelper with ChangeNotifier {
     longitude = myLoc.longitude;
 
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$GOOGLE_API_KEY');
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${Secrets.GOOGLE_API_KEY}');
     final _response = await http.get(url);
     final _cityName = json.decode(_response.body)['results'][0]
             ['address_components'][3]['long_name'] ??
