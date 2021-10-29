@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
 import 'package:weather_app/icons.dart';
 import 'package:weather_app/models/HourlyByLatLng.dart';
-import 'package:weather_app/weather_helper.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 class DayItem extends StatelessWidget {
   DayItem({@required this.response, @required this.i});
   final HourlyByLatLng response;
-  int i;
+  final i;
 
   @override
   Widget build(BuildContext context) {

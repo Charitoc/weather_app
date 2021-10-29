@@ -1,18 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/retry.dart';
-import 'package:weather_app/location_helper.dart';
 import 'package:weather_app/models/CurrentByLatLng.dart';
 import 'package:weather_app/models/HourlyByLatLng.dart';
-
-import 'Day.dart';
 import 'utils/Secrets.dart';
 
 //const API_KEY = 'bf44fb7452f5021bcf6d6b2d3f59700c';
 
-class WeatherHelper extends ChangeNotifier {
+class WeatherHelper with ChangeNotifier {
   num lat;
   num lon;
   var responseObject;

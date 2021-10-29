@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
-import 'package:weather_app/Day.dart';
 import 'package:weather_app/dayItem.dart';
 import 'package:weather_app/models/CurrentByLatLng.dart';
 import 'package:weather_app/models/HourlyByLatLng.dart';
@@ -23,19 +20,53 @@ class _DetailScreenState extends State<DetailScreen> {
   num lon;
   var weather;
   var time;
-  Future<List<DayCard>> dayCards;
-  List<DayCard> listofDayCards;
   CurrentByLatLng response;
   HourlyByLatLng response2;
   Future myFuture;
   Future dayresponse;
   Future myFuture2;
-  Future<HourlyByLatLng> _myFuture;
+  var fut;
+
+  Future<void> asyncMethod() async {
+    await Provider.of<LocationHelper>(context, listen: false)
+        .getplace()
+        .then((value) {
+      location = value[0];
+      lat = value[1];
+      lon = value[2];
+      print("Loc");
+    });
+    await Future.wait([
+      Provider.of<WeatherHelper>(context, listen: false)
+          .getWeather(lat, lon)
+          .then((value) => response = value),
+      Provider.of<WeatherHelper>(context, listen: false)
+          .getHourlyWeather(lat, lon)
+          .then((value) => response2 = value)
+    ]);
+  }
 
   @override
   void initState() {
     super.initState();
+    // Provider.of<LocationHelper>(context, listen: false).initLocation();
+    myFuture = asyncMethod();
 
+    // myFuture = Provider.of<LocationHelper>(context, listen: false)
+    //     .getplace()
+    //     .then((value) async {
+    //   location = value[0];
+    //   lat = value[1];
+    //   lon = value[2];
+    //   await Future.wait([
+    //     Provider.of<WeatherHelper>(context, listen: false)
+    //         .getWeather(lat, lon)
+    //         .then((value) => response = value),
+    //     Provider.of<WeatherHelper>(context, listen: false)
+    //         .getHourlyWeather(lat, lon)
+    //         .then((value) => response2 = value)
+    //   ]);
+    // });
     //isLoading = true;
     // location = Provider.of<LocationHelper>(context).location;
     // weather = Provider.of<WeatherHelper>(context).weather;
@@ -94,7 +125,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.red,
         body: FutureBuilder(
             // future: Future.wait([
             //   Provider.of<LocationHelper>(context, listen: false)
@@ -109,33 +140,46 @@ class _DetailScreenState extends State<DetailScreen> {
             //     });
             //   }),
             // ]),
-            future: Provider.of<LocationHelper>(context)
-                .getplace()
-                .then((value) async {
-              location = value[0];
-              lat = value[1];
-              lon = value[2];
-              await Future.wait([
-                myFuture = Provider.of<WeatherHelper>(context, listen: false)
-                    .getWeather(lat, lon)
-                    .then((value) => response = value),
-                myFuture2 = Provider.of<WeatherHelper>(context, listen: false)
-                    .getHourlyWeather(lat, lon)
-                    .then((value) => response2 = value)
-              ]);
-            }),
+            future: myFuture,
             builder: (ctx, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.active ||
+                  snapshot.connectionState == ConnectionState.none) {
                 return Center(child: CircularProgressIndicator());
-              } else if (snapshot.error != null) {
-                print(snapshot.error);
-                return Text(
-                  snapshot.error.toString(),
-                  style: TextStyle(color: Colors.white),
+                // return Scaffold(
+                //   appBar: AppBar(),
+                //   body:
+                //   Center(
+                //     child: CircularProgressIndicator(),
+                //   ),
+                // );
+              }
+              // else if (snapshot.connectionState != ConnectionState.done) {
+              //   return Center(child: CircularProgressIndicator());
+              // }
+              // else if (snapshot.error != null) {
+              //   print(snapshot.error);
+              //   return Text(
+              //     snapshot.error.toString(),
+              //     style: TextStyle(color: Colors.white),
+              //   );
+              // }
+              else if (snapshot.error != null) {
+                return Center(
+                  child: Text(
+                      "Error on future2 ${snapshot?.error?.toString() ?? ""}"),
                 );
-              } else {
-                //print("${response.toJson()}");
-                // print("DONE");
+              }
+              // else if (snapshot.connectionState == ConnectionState.done) {
+              //   print("${response.toJson()}");
+              //   print("DONE");
+              //   if (snapshot.hasError) {
+              //     return Center(
+              //       child: Text(
+              //           "Error on future2 ${snapshot?.error?.toString() ?? ""}"),
+              //     );
+              //   }
+              else if (snapshot.connectionState == ConnectionState.done) {
                 return Container(
                     decoration: (response?.weather?.length ?? 0) > 0
                         ? response.weather[0].icon.toString().contains('d')
@@ -202,6 +246,10 @@ class _DetailScreenState extends State<DetailScreen> {
                         ],
                       ),
                     ));
+              } else {
+                return Center(
+                  child: Text("None of the above  ?? " "}"),
+                );
               }
             }),
       ),
