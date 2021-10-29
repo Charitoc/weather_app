@@ -5,7 +5,7 @@ import 'package:weather_app/weather_helper.dart';
 import 'details_screen.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  //WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 

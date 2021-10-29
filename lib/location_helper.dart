@@ -43,8 +43,8 @@ class LocationHelper with ChangeNotifier {
       }
     } catch (error) {
       _serviceEnabled = false;
+      await initLocation();
     }
-    //initLocation();
   }
 
   Future getplace() async {
@@ -60,11 +60,7 @@ class LocationHelper with ChangeNotifier {
     final _cityName = json.decode(_response.body)['results'][0]
             ['address_components'][3]['long_name'] ??
         "";
-    // var myList = WeatherHelper.getWeather(latitude, longitude);
-    // myList.then((value) {
-    //   //finalList = [myList, _cityName];
-    //   value.insert(0, _cityName);
-    // });
+
     myList = [_cityName, latitude, longitude];
 
     return myList;

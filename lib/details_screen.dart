@@ -32,112 +32,40 @@ class _DetailScreenState extends State<DetailScreen> {
       location = value[0];
       lat = value[1];
       lon = value[2];
-      print("Loc");
+      print("$value");
+      print("1");
     });
     await Future.wait([
       Provider.of<WeatherHelper>(context, listen: false)
           .getWeather(lat, lon)
-          .then((value) => response = value),
+          .then((value) {
+        response = value;
+        print("$value");
+        print("2");
+      }),
       Provider.of<WeatherHelper>(context, listen: false)
           .getHourlyWeather(lat, lon)
-          .then((value) => response2 = value)
+          .then((value) {
+        response2 = value;
+        print("$value");
+        print("3");
+      })
     ]);
   }
 
   @override
   void initState() {
     super.initState();
-    // Provider.of<LocationHelper>(context, listen: false).initLocation();
     myFuture = asyncMethod();
-
-    // myFuture = Provider.of<LocationHelper>(context, listen: false)
-    //     .getplace()
-    //     .then((value) async {
-    //   location = value[0];
-    //   lat = value[1];
-    //   lon = value[2];
-    //   await Future.wait([
-    //     Provider.of<WeatherHelper>(context, listen: false)
-    //         .getWeather(lat, lon)
-    //         .then((value) => response = value),
-    //     Provider.of<WeatherHelper>(context, listen: false)
-    //         .getHourlyWeather(lat, lon)
-    //         .then((value) => response2 = value)
-    //   ]);
-    // });
-    //isLoading = true;
-    // location = Provider.of<LocationHelper>(context).location;
-    // weather = Provider.of<WeatherHelper>(context).weather;
-    // LocationHelper.getplace().then((value) {
-    //   setState(() {
-    //     this.location = value;
-    //   });
-    // }).then((_) {
-    //   //List hourList = List<Object>.from(element);
-    //   //Future<List> hourList =
-    // });
-    // .then((_) {
-    //   WeatherHelper.getHourlyWeather(
-    //           LocationHelper.latitude, LocationHelper.latitude)
-    //       .then((value) {
-    //     response2 = value;
-    //     print(response2.hourly.length);
-    //   });
-
-    //WeatherHelper.getHourlyWeather(WeatherHelper.lat, WeatherHelper.lon);
-    // dayCards.then((value) {
-    //   response = val;
-    // });
-    // dayCards.then((value) {
-    //   listofDayCards = value;
-    // });
-    //print(object)
-
-    //print(hourList);
   }
 
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
-    // Future fun() async {
-    //   final aFuture = await Future.wait([
-    //     Provider.of<LocationHelper>(context, listen: false)
-    //         .getplace()
-    //         .then((value) {
-    //       location = value[0];
-    //       lat = value[1];
-    //       lon = value[2];
-    //     }).then((value) {
-    //       //     .then((value) {
-    //       //   print("NEXT VALUE ${value.toJson()}");
-    //       //   response = value;
-    //       // }),
-
-    //       return 1;
-    //     }),
-    //   ]);
-    // }
-
-    //fun().then((value) => null);
-
-    //final resp = Provider.of<WeatherHelper>(context).hello;
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.red,
         body: FutureBuilder(
-            // future: Future.wait([
-            //   Provider.of<LocationHelper>(context, listen: false)
-            //       .getplace()
-            //       .then((val) {
-            //     location = val;
-            //     Provider.of<WeatherHelper>(context, listen: false)
-            //         .getWeather(40.0, 20.0)
-            //         .then((value) {
-            //       response = value;
-            //       print(response.main.humidity);
-            //     });
-            //   }),
-            // ]),
             future: myFuture,
             builder: (ctx, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting ||
